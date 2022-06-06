@@ -1,4 +1,4 @@
-CONTAINERS = nginx php-wordpress database
+CONTAINERS = $(shell ls srcs/)
 
 
 all : $(CONTAINERS)
