@@ -1,4 +1,7 @@
-CONTAINERS = $(shell ls srcs/)
+CLI = docker
+COMPOSE_FILE = srcs/docker-compose.yml
 
+all :
+	$(CLI) compose -f $(COMPOSE_FILE) up
 
-all : $(CONTAINERS)
+stop :
