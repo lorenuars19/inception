@@ -3,6 +3,11 @@ version: "3.7"
 services:
   nginx:
     build: ./nginx/
+    networks:
+      -
     ports:
       - "443:443"
     restart: always
+
+networks:
+  entrypoint:
