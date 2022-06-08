@@ -4,7 +4,7 @@ services:
   nginx:
     build: ./nginx/
     networks:
-      -
+      - entrypoint
     ports:
       - "443:443"
     restart: always
