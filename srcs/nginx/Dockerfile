@@ -24,4 +24,4 @@ RUN useradd -M -s /usr/sbin/nologin -u 42 --user-group nginx \
 
 USER nginx
 
-ENTRYPOINT ["/nginx", "-g", "daemon off;"]
+ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
