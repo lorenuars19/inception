@@ -3,7 +3,7 @@ FROM debian:10.12-slim
 
 # install NGINX from the official repository
 RUN apt-get update \
-&& apt-get -y install openssl nginx zsh
+&& apt-get -y install openssl nginx
 
 # Generate Self-signed certificates with openssl
 RUN mkdir -p /nginx/ && mkdir -p /etc/nginx/ssl \

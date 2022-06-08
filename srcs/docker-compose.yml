@@ -1,13 +1,20 @@
 version: "3.7"
 
 services:
+
   nginx:
     build: ./nginx/
     networks:
       - entrypoint
+      - intra
     ports:
       - "443:443"
     restart: always
 
+  database:
+    build: ./database
+    restart: always
+
 networks:
   entrypoint:
+  intra:
