@@ -35,8 +35,8 @@ stop :
 	$(DOCKER) stop $(shell docker images -q)
 
 rm_all:
-	if [[ ! -z $$(docker ps -aq) ]];then $(DOCKER) stop $(shell docker ps -aq) ;fi
-	if [[ ! -z $$(docker images -q) ]];then $(DOCKER) image rm -f $(shell docker images -q) ;fi
+	-if [[ ! -z $$(docker ps -aq) ]];then $(DOCKER) stop $(shell docker ps -aq) ;fi
+	-if [[ ! -z $$(docker images -q) ]];then $(DOCKER) image rm -f $(shell docker images -q) ;fi
 
 clr: rm_all
 	$(DOCKER) system prune -f
