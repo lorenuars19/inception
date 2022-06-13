@@ -3,7 +3,7 @@ DOCKERCP = $(DOCKER)-compose
 COMPOSE_FILE = srcs/docker-compose.yml
 ENV_FILE = srcs/.env
 
-DOCKERCP += -f $(COMPOSE_FILE) --env-file 
+DOCKERCP += -f $(COMPOSE_FILE) --env-file $(ENV_FILE)
 
 SHELL=/bin/bash
 

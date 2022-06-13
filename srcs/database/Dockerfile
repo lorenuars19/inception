@@ -1,6 +1,6 @@
 FROM debian:buster
 
-RUN apt-get -y -qq update && apt-get -y -qq install mariadb
+RUN apt-get -y update && apt-get -y install mariadb-server
 
 RUN mkdir ./db-volume.d/
 

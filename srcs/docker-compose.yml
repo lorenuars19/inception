@@ -5,7 +5,8 @@ services:
   nginx-cont:
     build: ./nginx/
     networks:
-      - intra
+      - net-nginx
+      - net-php
     ports:
       - "443:443"
     restart: always
@@ -13,11 +14,18 @@ services:
   db-cont:
     build: ./database
     restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
 
   php-cont:
     build: ./wordpress
     restart: always
 
 networks:
-  intra:
-    internal: true
+  net-nginx:
+    driver: bridge
+  net-php:
+    driver: overlay
+  net-db:
+    driver: overlay
+
