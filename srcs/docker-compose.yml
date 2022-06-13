@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
 
-  nginx:
+  nginx-cont:
     build: ./nginx/
     networks:
       - intra
@@ -10,15 +10,14 @@ services:
       - "443:443"
     restart: always
 
-  database:
+  db-cont:
     build: ./database
     restart: always
 
-  wordpress:
+  php-cont:
     build: ./wordpress
     restart: always
 
 networks:
   intra:
-    driver: host
     internal: true
