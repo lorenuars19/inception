@@ -5,7 +5,6 @@ services:
   nginx:
     build: ./nginx/
     networks:
-      - entrypoint
       - intra
     ports:
       - "443:443"
@@ -15,6 +14,11 @@ services:
     build: ./database
     restart: always
 
+  wordpress:
+    build: ./wordpress
+    restart: always
+
 networks:
-  entrypoint:
   intra:
+    driver: host
+    internal: true

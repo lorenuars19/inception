@@ -1,5 +1,5 @@
 DOCKER = docker
-DOCKERCP = $(DOCKER) compose
+DOCKERCP = $(DOCKER)-compose
 COMPOSE_FILE = srcs/docker-compose.yml
 
 DOCKERCP += -f $(COMPOSE_FILE)
@@ -23,6 +23,12 @@ database_build:
 
 database_run:
 	$(DOCKER) run -it -v $$PWD:/home -p 443:443 databasecont /bin/zsh
+
+wordpress_build:
+	$(DOCKER) build --progress tty -t wordpresscont srcs/wordpress
+
+wordpress_run:
+	$(DOCKER) run -it -v $$PWD:/home -p 443:443 wordpresscont /bin/zsh
 
 ips:
 	$(DOCKER) ps -a
