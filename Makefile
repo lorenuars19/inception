@@ -1,9 +1,9 @@
 DOCKER = docker
-DOCKERCP = $(DOCKER)-compose
+DOCKERCP = $(DOCKER) compose
 COMPOSE_FILE = srcs/docker-compose.yml
 ENV_FILE = srcs/.env
 
-DOCKERCP += -f $(COMPOSE_FILE) --env-file $(ENV_FILE)
+DOCKERCP += --project-directory ./srcs/ -f ./srcs/docker-compose.yml --env-file ./srcs/.env
 
 SHELL=/bin/bash
 

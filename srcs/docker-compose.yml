@@ -10,22 +10,44 @@ services:
     ports:
       - "443:443"
     restart: always
+    volumes:
+      - wordpress-vol:/var/www/default/
 
   db-cont:
     build: ./database
     restart: always
+    expose:
+      - 3306
+    networks:
+      - net-php
+      - net-db
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    volumes:
+      - db-vol:/var/db/
 
-  php-cont:
+  wordpress-cont:
     build: ./wordpress
     restart: always
+    expose:
+      - 9000
+    networks:
+      - net-php
+      - net-db
+    volumes:
+      - wordpress-vol:/var/wordpress
+
+volumes:
+  wordpress-vol:
+  db-vol:
+
 
 networks:
   net-nginx:
     driver: bridge
   net-php:
-    driver: overlay
+    driver: bridge
+    internal: true
   net-db:
-    driver: overlay
-
+    driver: bridge
+    internal: true
