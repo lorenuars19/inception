@@ -6,9 +6,9 @@ RUN apt-get -y update && apt-get -y install curl php-fpm zsh
 RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /bin/wp \
 && chmod 700 /bin/wp \
 && wp cli update \
-&& wp --allow-root core download --path=${WP_PATH} --skip_plugins --skip_packages --skip_themes \
+&& wp --allow-root core download --path=${VOL_WP_PATH} --skip-plugins --skip-packages --skip-themes \
 	--locale=en_US \
-&& wp --allow-root config create --path=${WP_PATH} --skip_plugins --skip_packages --skip_themes \
-	--dbname=${WP_DB_NAME} --dbuser=${WP_DB_USER} --dbpass=${WP_DB_PASS}
+&& wp --allow-root config create --path=${VOL_WP_PATH} --skip-plugins --skip-packages --skip-themes \
+	--dbname=${LOGIN}_wp_db --dbuser=${LOGIN} --dbpass=${PASSWD}
 
 CMD ["/bin/wp shell"]

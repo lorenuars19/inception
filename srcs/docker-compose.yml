@@ -10,6 +10,7 @@ services:
       - "443:443"
     restart: always
     env_file:
+      - .env_secret
       - .env_config
     volumes:
       - wordpress-vol:/${VOL_WP_PATH}
@@ -23,7 +24,8 @@ services:
       - net-php
       - net-db
     env_file:
-      - ./database/.env_mysql_config
+      - .env_secret
+      - .env_config
     volumes:
       - db-vol:${VOL_DB_PATH}
 
@@ -36,8 +38,8 @@ services:
       - net-php
       - net-db
     env_file:
+      - .env_secret
       - .env_config
-      - ./wordpress/.env_wp_config
     volumes:
       - wordpress-vol:${VOL_WP_PATH}
 

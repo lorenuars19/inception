@@ -1,14 +1,25 @@
 DOCKER = docker
 DOCKERCP = $(DOCKER) compose
 COMPOSE_FILE = srcs/docker-compose.yml
-ENV_FILE = srcs/.env
+ENV_FILE = srcs/.env_config
+SECR_ENV_FILE = srcs/.env_secret
 
-DOCKERCP += --project-directory ./srcs/ -f ./srcs/docker-compose.yml --env-file ./srcs/.env
+LOG_FILE= .log
+
+DOCKERCP += --project-directory ./srcs/ -f ./srcs/docker-compose.yml --env-file $(ENV_FILE)
 
 SHELL=/bin/bash
 
-all :
-	$(DOCKERCP) up -e LOGIN="lorenuar"
+all: set_password
+	$(DOCKERCP) up
+
+set_password:
+	@if [[ -f $(SECR_ENV_FILE) ]];then export $$(cat $(SECR_ENV_FILE) | xargs); fi ;\
+		while [[ -z "$${PASSWD}" ]] ;do \
+			echo "Please Enter Password : "; read PASSWD; echo "PASSWD=$${PASSWD}" > $(SECR_ENV_FILE);\
+			if [[ -f $(SECR_ENV_FILE) ]];then export $$(cat $(SECR_ENV_FILE) | xargs); fi; cat $(SECR_ENV_FILE);\
+		done
+	$(DOCKERCP) config > $(LOG_FILE)_dockercp_config
 
 cp:
 	-$(DOCKERCP) $(filter-out $@, $(MAKECMDGOALS))
@@ -33,7 +44,7 @@ wordpress_run:
 
 ips:
 	$(DOCKER) ps -a
-	$(DOCKER) inspect -f '{{.Name}} - {{.NetworkSettings.IPAddress }}' $(shell docker ps -aq)
+	-if [[ ! -z $$(docker ps -aq) ]];then $(DOCKER) inspect -f '{{.Name}} - {{.NetworkSettings.IPAddress }}' $(shell docker ps -aq); fi
 
 list :
 	$(DOCKER) images
