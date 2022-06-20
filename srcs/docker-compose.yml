@@ -1,7 +1,6 @@
 version: "3.7"
 
 services:
-
   nginx-cont:
     build: ./nginx/
     networks:
@@ -10,8 +9,10 @@ services:
     ports:
       - "443:443"
     restart: always
+    env_file:
+      - .env_config
     volumes:
-      - wordpress-vol:/var/www/default/
+      - wordpress-vol:/${VOL_WP_PATH}
 
   db-cont:
     build: ./database
@@ -21,10 +22,10 @@ services:
     networks:
       - net-php
       - net-db
-    environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    env_file:
+      - ./database/.env_mysql_config
     volumes:
-      - db-vol:/var/db/
+      - db-vol:${VOL_DB_PATH}
 
   wordpress-cont:
     build: ./wordpress
@@ -34,8 +35,11 @@ services:
     networks:
       - net-php
       - net-db
+    env_file:
+      - .env_config
+      - ./wordpress/.env_wp_config
     volumes:
-      - wordpress-vol:/var/wordpress
+      - wordpress-vol:${VOL_WP_PATH}
 
 volumes:
   wordpress-vol:

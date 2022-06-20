@@ -8,7 +8,7 @@ DOCKERCP += --project-directory ./srcs/ -f ./srcs/docker-compose.yml --env-file 
 SHELL=/bin/bash
 
 all :
-	$(DOCKERCP) up
+	$(DOCKERCP) up -e LOGIN="lorenuar"
 
 cp:
 	-$(DOCKERCP) $(filter-out $@, $(MAKECMDGOALS))
@@ -48,5 +48,6 @@ rm_all:
 clr: rm_all
 	$(DOCKER) system prune -f
 	$(DOCKER) image prune -f
+	$(DOCKER) volume prune -f
 	$(DOCKER) container prune -f
 	$(DOCKER) builder prune -f
