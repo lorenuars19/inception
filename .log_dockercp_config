@@ -29,6 +29,8 @@ services:
       PASSWD: Hello
       VOL_DB_PATH: /var/db/
       VOL_WP_PATH: /var/www/wordpress
+    expose:
+    - "443"
     networks:
       net-nginx: null
       net-php: null

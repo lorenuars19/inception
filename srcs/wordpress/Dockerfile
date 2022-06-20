@@ -1,14 +1,19 @@
 FROM debian:buster
 
-RUN apt-get -y update && apt-get -y install curl php-fpm zsh
+RUN apt-get -y update && apt-get -y install curl php-fpm mariadb-client zsh
 
 # install worpress using wp-cli
 RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /bin/wp \
 && chmod 700 /bin/wp \
 && wp cli update \
-&& wp --allow-root core download --path=${VOL_WP_PATH} --skip-plugins --skip-packages --skip-themes \
+&& wp --allow-root core download --path=${VOL_WP_PATH} \
 	--locale=en_US \
-&& wp --allow-root config create --path=${VOL_WP_PATH} --skip-plugins --skip-packages --skip-themes \
-	--dbname=${LOGIN}_wp_db --dbuser=${LOGIN} --dbpass=${PASSWD}
+&& wp --allow-root config create --path=${VOL_WP_PATH} \
+	--dbname=${LOGIN}_wp_db --dbuser=${LOGIN} --dbpass=${PASSWD} \
+&& wp --allow-root core install --path=${VOL_WP_PATH} \
+	--url=${LOGIN}.42.fr --title="${LOGIN}_site" --admin_user=${LOGIN} \
+	--admin_password={PASSWD} --admin_email="${LOGIN}@student.s19.be" \
+&& wp --allow-root user create --path=${VOL_WP_PATH} \
+	--user-login=guest --role=subscriber --user_pass=guest123
 
 CMD ["/bin/wp shell"]

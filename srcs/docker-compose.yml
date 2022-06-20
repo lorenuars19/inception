@@ -6,6 +6,8 @@ services:
     networks:
       - net-nginx
       - net-php
+    expose:
+      - 443
     ports:
       - "443:443"
     restart: always
