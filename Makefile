@@ -27,6 +27,9 @@ define test
 endef
 
 all: set_password
+	echo $$HOME
+	mkdir -p ${HOME}/data/wordpress
+	mkdir -p ${HOME}/data/mariadb
 	$(DOCKERCP) up
 
 set_password:

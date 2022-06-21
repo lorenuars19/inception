@@ -15,7 +15,9 @@ services:
       - .env_secret
       - .env_config
     volumes:
-      - wordpress-vol:/${VOL_WP_PATH}
+      -  ${HOME}/data/wordpress:/${VOL_WP_PATH}
+    depends_on:
+     - wordpress-cont
 
   db-cont:
     build: ./database
@@ -29,7 +31,7 @@ services:
       - .env_secret
       - .env_config
     volumes:
-      - db-vol:${VOL_DB_PATH}
+      -  ${HOME}/data/mariadb:${VOL_DB_PATH}
 
   wordpress-cont:
     build: ./wordpress
@@ -43,11 +45,9 @@ services:
       - .env_secret
       - .env_config
     volumes:
-      - wordpress-vol:${VOL_WP_PATH}
-
-volumes:
-  wordpress-vol:
-  db-vol:
+      -  ${HOME}/data/wordpress:${VOL_WP_PATH}
+    depends_on:
+      - db-conts
 
 
 networks:
