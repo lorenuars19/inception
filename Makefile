@@ -80,3 +80,5 @@ clr: rm_all
 	$(DOCKER) volume prune -f
 	$(DOCKER) container prune -f
 	$(DOCKER) builder prune -f
+
+re: clr all

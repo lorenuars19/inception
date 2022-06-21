@@ -2,7 +2,7 @@ FROM alpine:3.13
 
 ARG MY_SQL_ROOT_PASSWORD=${PASSWD}
 
-RUN apk update && apk add --no-cache mariadb mariadb mariadb-client
+RUN apk update && apk add --no-cache mariadb mariadb-client
 
 COPY ./entry.sh /entry.sh
 

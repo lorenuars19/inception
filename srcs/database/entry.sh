@@ -1,20 +1,27 @@
 if [ ! -d "/run/mysqld" ]; then
 	mkdir -p /run/mysqld
+	chown -R mysql:mysql /run/mysqld
+
 fi
 
-if [ ! -d ${VOL_DB_PATH} ]; then
-	mysql_install_db --basedir=/usr --datadir${VOL_DB_PATH} --user=mysql --rpm --skip-test-db
+chown -R mysql:mysql /var/lib/mysql
 
-	tmp=`mktemp`
-	if [ ! -f "${tmp}" ]; then
+mysql_install_db --basedir=/usr --datadir=/var/lib/mysql --user=mysql --rpm --skip-test-db
+
+if [[ $? -ne 0 ]];then
+	echo ERROR
 	exit 1
-	fi
+fi
+tmp=`mktemp`
+if [ ! -f "${tmp}" ]; then
+	exit 1
+fi
 
-	DB_NAME=${LOGIN}_wp
+DB_NAME=${LOGIN}_wp
 
-	cat << EOF > ${tmp}
+cat << EOF > ${tmp}
 
-USE mysql
+USE mysql;
 FLUSH PRIVILEGES;
 
 DELETE FROM mysql.user WHERE User='';
@@ -23,8 +30,8 @@ DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${MY_SQL_PASSWD}';
 
 CREATE DATABASE ${DB_NAME}_wp_db;
-CREATE USER ${LOGIN}'@'%' IDENTIFIED by '${MY_SQL_ROOT_PASSWD}';
-GRANT ALL PRIVILIEGES ON ${DB_NAME}.* TO '${LOGIN}'@'%';
+CREATE USER '${LOGIN}'@'%' IDENTIFIED by '${MY_SQL_ROOT_PASSWD}';
+GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${LOGIN}'@'%';
 
 FLUSH PRIVILEGES;
 
@@ -32,7 +39,7 @@ EOF
 
 /usr/bin/mysqld --user=mysql --bootstrap < ${tmp}
 rm ${tmp}
-fi
+
 
 # allow remote connections
 sed -i "s|skip-networking|# skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf
