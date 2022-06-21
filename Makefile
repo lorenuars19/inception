@@ -28,8 +28,8 @@ endef
 
 all: set_password
 	echo $$HOME
-	mkdir -p ${HOME}/data/wordpress
-	mkdir -p ${HOME}/data/mariadb
+	mkdir -p /home/gregoire/data/wordpress
+	mkdir -p /home/gregoire/data/mariadb
 	$(DOCKERCP) up
 
 set_password:
