@@ -6,4 +6,4 @@ COPY ./entry.sh /tmp/entry.sh
 
 WORKDIR ${VOL_WP_PATH}
 
-CMD ["/bin/sh", "/tmp/entry.sh"]
+ENTRYPOINT ["/bin/sh", "/tmp/entry.sh"]

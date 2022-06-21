@@ -3,20 +3,19 @@ if [ ! -d "/run/mysqld" ]; then
 fi
 
 if [ ! -d ${VOL_DB_PATH} ]; then
-	mysql_install_db --basedir=/usr --datadir${VOL_DB_PATH} --user=${LOGIN} --rpm --skip-test-db
-fi
+	mysql_install_db --basedir=/usr --datadir${VOL_DB_PATH} --user=mysql --rpm --skip-test-db
 
-tmp=`mktemp`
-if [ ! -f "${tmp}" ]; then
+	tmp=`mktemp`
+	if [ ! -f "${tmp}" ]; then
 	exit 1
-fi
+	fi
 
-DB_NAME=${LOGIN}_wp
+	DB_NAME=${LOGIN}_wp
 
-cat << EOF > ${tmp}
+	cat << EOF > ${tmp}
 
 USE mysql
-FLUSH PRIVILIEGES;
+FLUSH PRIVILEGES;
 
 DELETE FROM mysql.user WHERE User='';
 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
@@ -27,11 +26,13 @@ CREATE DATABASE ${DB_NAME}_wp_db;
 CREATE USER ${LOGIN}'@'%' IDENTIFIED by '${MY_SQL_ROOT_PASSWD}';
 GRANT ALL PRIVILIEGES ON ${DB_NAME}.* TO '${LOGIN}'@'%';
 
-FLUSH PRIVILIEGES;
+FLUSH PRIVILEGES;
 
 EOF
 
 /usr/bin/mysqld --user=mysql --bootstrap < ${tmp}
+rm ${tmp}
+fi
 
 # allow remote connections
 sed -i "s|skip-networking|# skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf

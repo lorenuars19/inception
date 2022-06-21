@@ -11,4 +11,4 @@ RUN mkdir -p /nginx/ && mkdir -p /etc/nginx/ssl \
 
 COPY ./conf/nginx.conf /etc/nginx/sites-enabled/wordpress/nginx.conf
 
-CMD [ "/usr/sbin/nginx", "-g", "daemon off;" ]
+ENTRYPOINT [ "/usr/sbin/nginx", "-g", "daemon off;" ]
