@@ -1,8 +1,8 @@
-FROM debian:buster
+FROM alpine:3.13
 
 ARG MY_SQL_ROOT_PASSWORD=${PASSWD}
 
-RUN apt-get -y update && apt-get -y install mariadb-server
+RUN apk update && apk add --no-cache mariadb mariadb mariadb-client
 
 COPY ./entry.sh /entry.sh
 

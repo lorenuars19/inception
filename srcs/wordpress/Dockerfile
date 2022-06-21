@@ -1,6 +1,6 @@
 FROM debian:buster
 
-RUN apt-get -y update && apt-get -y install curl php-fpm mariadb-client zsh
+RUN apt-get -y update && apt-get -y install curl php-fpm zsh
 
 COPY ./entry.sh /tmp/entry.sh
 
