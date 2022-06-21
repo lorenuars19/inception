@@ -2,6 +2,8 @@ FROM debian:buster
 
 RUN apt-get -y update && apt-get -y install curl php-fpm mariadb-client zsh
 
-COPY ./entry.sh /entry.sh
+COPY ./entry.sh /tmp/entry.sh
 
-CMD ["/bin/sh", "entry.sh"]
+WORKDIR ${VOL_WP_PATH}
+
+CMD ["/bin/sh", "/tmp/entry.sh"]

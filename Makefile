@@ -10,15 +10,31 @@ DOCKERCP += --project-directory ./srcs/ -f ./srcs/docker-compose.yml --env-file 
 
 SHELL=/bin/bash
 
+define get_passwd
+@if [[ ! -f $(SECR_ENV_FILE) ]]; then touch $(SECR_ENV_FILE); fi ;\
+if [[ -f $(SECR_ENV_FILE) ]];then export $$(cat $(SECR_ENV_FILE) | xargs ) 2>&1 >/dev/null; fi ;\
+while [[ -z "$${${1}}" ]] ;do \
+	echo "Please Enter [${1}] Password : " ;\
+	read ${1} ;\
+	echo "${1}=$${${1}}" >> $(SECR_ENV_FILE) ;\
+	if [[ -f $(SECR_ENV_FILE) ]];then export $$(cat $(SECR_ENV_FILE) | xargs) 2>&1 >/dev/null; fi ;\
+	cat $(SECR_ENV_FILE) ;\
+	done
+endef
+
+define test
+	echo $1
+endef
+
 all: set_password
 	$(DOCKERCP) up
 
 set_password:
-	@if [[ -f $(SECR_ENV_FILE) ]];then export $$(cat $(SECR_ENV_FILE) | xargs); fi ;\
-		while [[ -z "$${PASSWD}" ]] ;do \
-			echo "Please Enter Password : "; read PASSWD; echo "PASSWD=$${PASSWD}" > $(SECR_ENV_FILE);\
-			if [[ -f $(SECR_ENV_FILE) ]];then export $$(cat $(SECR_ENV_FILE) | xargs); fi; cat $(SECR_ENV_FILE);\
-		done
+	$(call get_passwd,MY_SQL_ROOT_PASWD)
+	$(call get_passwd,ROOT_PASWD)
+	$(call get_passwd,WP_ROOT_PASWD)
+	$(call get_passwd,WP_EDIT_PASWD)
+
 	$(DOCKERCP) config > $(LOG_FILE)_dockercp_config
 
 cp:
