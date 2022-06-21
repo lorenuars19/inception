@@ -1,6 +1,6 @@
 # install worpress using wp-cli
 
-curl -LSs https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /bin/wp \
+curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /bin/wp \
 && chmod 700 /bin/wp
 && wp cli update
 && wp --allow-root core download --path=${VOL_WP_PATH} --locale=en_US \
