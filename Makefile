@@ -22,16 +22,17 @@ while [[ -z "$${${1}}" ]] ;do \
 	done
 endef
 
-all: set_password git_update
+all: git_update set_password
 	@mkdir -p /home/gregoire/data/wordpress
 	@mkdir -p /home/gregoire/data/mariadb
 	$(DOCKERCP) up
 
+git_update: GIT_UPDATE = $(shell git pull | grep "up to date")
 git_update:
-	ifeq ($(shell git pull | grep "up to date"),)
-		$(error UPDATED)
-	endif
-
+ifneq ("$(GIT_UPDATE)","Already up to date.")
+	$(error $(shell printf "\e[33;1m\`git pull\` pulled new changes, STOPPED to avoid corrupting Makefile\e[0m\n"))
+endif
+	exit 1
 
 set_password:
 	$(call get_passwd,MY_SQL_ROOT_PASWD)
