@@ -29,8 +29,9 @@ all: git_update set_password
 
 git_update: GIT_UPDATE = $(shell git pull | grep "up to date")
 git_update:
-ifneq ("$(GIT_UPDATE)","Already up to date.")
-	$(error $(shell printf "\e[33;1m\`git pull\` pulled new changes, STOPPED to avoid corrupting Makefile\e[0m\n"))
+ifneq ($(findstring up to date,$(GIT_UPDATE)),up to date)
+	$(info $(shell printf "\e[33;1mgit pull : $(GIT_UPDATE)\e[0m\n"))
+	$(error $(shell printf "\e[33;1mgit pull : pulled new changes, STOPPED to avoid corrupting Makefile\e[0m\n"))
 endif
 	exit 1
 
