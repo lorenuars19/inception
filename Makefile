@@ -28,7 +28,10 @@ all: set_password git_update
 	$(DOCKERCP) up
 
 git_update:
-	echo "GIT UPDATE"
+	ifeq ($(shell git pull | grep "up to date"),)
+		$(error UPDATED)
+	endif
+
 
 set_password:
 	$(call get_passwd,MY_SQL_ROOT_PASWD)
