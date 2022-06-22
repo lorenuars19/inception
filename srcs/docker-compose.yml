@@ -22,8 +22,6 @@ services:
   db-cont:
     build: ./database
     restart: always
-    expose:
-      - 3306
     networks:
       - net-php
       - net-db
@@ -36,11 +34,10 @@ services:
   wordpress-cont:
     build: ./wordpress
     restart: always
-    expose:
-      - 9000
     networks:
       - net-php
       - net-db
+      - net-nginx
     env_file:
       - .env_secret
       - .env_config
