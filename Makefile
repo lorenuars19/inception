@@ -10,8 +10,6 @@ DOCKERCP += --project-directory ./srcs/ -f ./srcs/docker-compose.yml --env-file 
 
 SHELL=/bin/bash
 
-
-
 define get_passwd
 @if [[ ! -f $(SECR_ENV_FILE) ]]; then touch $(SECR_ENV_FILE); fi ;\
 if [[ -f $(SECR_ENV_FILE) ]];then export $$(cat $(SECR_ENV_FILE) | xargs ) 2>&1 >/dev/null; fi ;\
@@ -24,13 +22,13 @@ while [[ -z "$${${1}}" ]] ;do \
 	done
 endef
 
-
-
-
-all: set_password
+all: set_password git_update
 	@mkdir -p /home/gregoire/data/wordpress
 	@mkdir -p /home/gregoire/data/mariadb
 	$(DOCKERCP) up
+
+git_update:
+	echo "GIT UPDATE"
 
 set_password:
 	$(call get_passwd,MY_SQL_ROOT_PASWD)
@@ -39,7 +37,6 @@ set_password:
 	$(call get_passwd,WP_EDIT_PASWD)
 
 	$(DOCKERCP) config > $(LOG_FILE)_dockercp_config
-
 
 ifeq (cp, $(firstword $(MAKECMDGOALS)))
 	CP_ARGS:=$(wordlist 2,$(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
