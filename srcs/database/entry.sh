@@ -17,8 +17,6 @@ if [ ! -f "${tmp}" ]; then
 	exit 1
 fi
 
-DB_NAME=${LOGIN}_wp
-
 cat << EOF > ${tmp}
 
 USE mysql;
@@ -29,7 +27,7 @@ DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.
 
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${MY_SQL_PASSWD}';
 
-CREATE DATABASE ${DB_NAME}_wp_db;
+CREATE DATABASE ${LOGIN};
 CREATE USER '${LOGIN}'@'%' IDENTIFIED by '${MY_SQL_ROOT_PASSWD}';
 GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${LOGIN}'@'%';
 
