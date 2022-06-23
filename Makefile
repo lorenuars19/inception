@@ -6,7 +6,7 @@ SECR_ENV_FILE = srcs/.env_secret
 
 LOG_FILE= .log
 
-DOCKERCP += --project-directory ./srcs/ -f ./srcs/docker-compose.yml --env-file $(ENV_FILE)
+DOCKERCP += -p inception --project-directory ./srcs/ -f ./srcs/docker-compose.yml --env-file $(ENV_FILE)
 
 SHELL=/bin/bash
 
@@ -22,27 +22,36 @@ while [[ -z "$${${1}}" ]] ;do \
 	done
 endef
 
-all: set_password
-	@mkdir -p /home/gregoire/data/wordpress
-	@mkdir -p /home/gregoire/data/mariadb
-	$(DOCKERCP) up
+all: set_password down up
 
+up:
+	$(DOCKERCP) up --detach --build --wait
+
+# volumes:
+# 	@mkdir -p /home/gregoire/data/wordpress
+# 	@mkdir -p /home/gregoire/data/mariadb
+
+force: down re
+	$(DOCKERCP) up --detach --build --wait --force-recreate
+
+down:
+	$(DOCKERCP) down --rmi all --volumes --remove-orphans
 
 set_password:
 	$(call get_passwd,MY_SQL_ROOT_PASWD)
+	$(call get_passwd,MY_SQL_PASWD)
 	$(call get_passwd,ROOT_PASWD)
 	$(call get_passwd,WP_ROOT_PASWD)
 	$(call get_passwd,WP_EDIT_PASWD)
 
 	$(DOCKERCP) config > $(LOG_FILE)_dockercp_config
 
-ifeq (cp, $(firstword $(MAKECMDGOALS)))
-	CP_ARGS:=$(wordlist 2,$(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
-	$(eval $(CP_ARGS):;@:)
+ifeq (cp,$(firstword $(MAKECMDGOALS)))
+  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(RUN_ARGS):;@:)
 endif
-
 cp:
-	-$(DOCKERCP) $(filter-out $@, $(MAKECMDGOALS))
+	$(DOCKERCP) $(filter-out $@, $(MAKECMDGOALS))
 
 nginx_build:
 	$(DOCKER) build --progress tty -t nginxcont srcs/nginx
@@ -73,8 +82,9 @@ stop :
 	$(DOCKER) stop $(shell docker images -q)
 
 rm_all:
-	-if [[ ! -z $$(docker ps -aq) ]];then $(DOCKER) stop $(shell docker ps -aq) ;fi
+	-if [[ ! -z $$(docker ps -aq) ]];then $(DOCKER) kill $(shell docker ps -aq) ;fi
 	-if [[ ! -z $$(docker images -q) ]];then $(DOCKER) image rm -f $(shell docker images -q) ;fi
+	rm -rf /home/gregoire/data/*
 
 clr: rm_all
 	$(DOCKER) system prune -f

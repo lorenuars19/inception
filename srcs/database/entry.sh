@@ -5,6 +5,7 @@ if [ ! -d "/run/mysqld" ]; then
 fi
 
 chown -R mysql:mysql /var/lib/mysql
+rm -rf /var/lib/mysql/*
 
 mysql_install_db --basedir=/usr --datadir=/var/lib/mysql --user=mysql --rpm --skip-test-db
 
@@ -25,17 +26,17 @@ FLUSH PRIVILEGES;
 DELETE FROM mysql.user WHERE User='';
 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
 
-ALTER USER 'root'@'localhost' IDENTIFIED BY '${MY_SQL_PASSWD}';
+ALTER USER 'root'@'localhost' IDENTIFIED BY '${MY_SQL_ROOT_PASSWD}';
 
-CREATE DATABASE ${LOGIN};
-CREATE USER '${LOGIN}'@'%' IDENTIFIED by '${MY_SQL_ROOT_PASSWD}';
-GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${LOGIN}'@'%';
+CREATE DATABASE ${WP_DB_NAME};
+CREATE USER '${LOGIN}'@'%' IDENTIFIED BY '${MY_SQL_PASSWD}';
+GRANT ALL PRIVILEGES ON ${WP_DB_NAME}.* TO '${LOGIN}'@'%';
 
 FLUSH PRIVILEGES;
 
 EOF
 
-/usr/bin/mysqld --user=mysql --bootstrap < ${tmp} > /dev/null
+/usr/bin/mysqld --user=mysql --bootstrap < ${tmp}
 rm ${tmp}
 
 
@@ -44,4 +45,4 @@ sed -i "s|skip-networking|# skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf
 sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf.d/mariadb-server.cnf
 
 
-exec /usr/bin/mysqld --user=mysql --console > /dev/null
+exec /usr/bin/mysqld --user=mysql --console
