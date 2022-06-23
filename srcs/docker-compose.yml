@@ -18,7 +18,7 @@ services:
     volumes:
       - ${VOL_FLD_DATA}/wordpress:/${VOL_WP_PATH}
     depends_on:
-     - wordpress-cont
+     - wordpress
 
   mariadb:
     container_name: mariadb
@@ -47,7 +47,7 @@ services:
     volumes:
       - ${VOL_FLD_DATA}/wordpress:${VOL_WP_PATH}
     depends_on:
-      - db-cont
+      - mariadb
 
 
 networks:
